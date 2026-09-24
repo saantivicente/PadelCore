@@ -82,9 +82,14 @@ h1{font-size:30px;line-height:1.03;letter-spacing:-.055em;margin:7px 0 20px}
   </section>
 
   <div class="section"><h2>Clubes cerca tuyo</h2><span class="see">Explorar →</span></div>
-  <article class="club-card">
-    <div class="club-info"><div class="rating">★ 4.8 · 2.1 KM</div><h3>Arena Padel</h3><p>6 canchas · Bar · Vestuarios</p></div>
-  </article>
+
+<article class="club-card">
+  <div class="club-info">
+    <div class="rating">★ Club PadelCore</div>
+    <h3 id="club-name">Cargando club...</h3>
+    <p id="club-details">Cargando información...</p>
+  </div>
+</article>
 </div>
 
 <nav class="bottom">
@@ -107,7 +112,14 @@ const padelDb = window.supabase.createClient(
     console.error('Error Supabase:', error);
     return;
   }
-  console.log('Club recibido:', data);
+
+  const club = data[0];
+
+  document.getElementById('club-name').textContent = club.name;
+  document.getElementById('club-details').textContent =
+    `${club.adress} · ${club.city}`;
+
+  console.log('Club mostrado:', club);
 });
 function toast(msg){
   const el=document.getElementById('toast');
