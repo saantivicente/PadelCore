@@ -58,7 +58,7 @@ h1{font-size:30px;line-height:1.03;letter-spacing:-.055em;margin:7px 0 20px}
       <button class="filter"><small>HORARIO</small><strong>Cualquier hora</strong></button>
       <button class="filter"><small>NIVEL</small><strong>3.5 — 4.5</strong></button>
     </div>
-    <button class="search-btn" onclick="toast('Buscando canchas y partidos…')">EXPLORAR</button>
+  <button class="search-btn" onclick="explorarCanchas()">EXPLORAR</button>
   </section>
 
   <div class="section"><h2>Partidos para vos</h2><span class="see">Ver todos →</span></div>
@@ -129,7 +129,102 @@ const padelDb = window.supabase.createClient(
 
   console.log('Canchas recibidas:', data);
 });
-function toast(msg){
+function explorarCanchas(){
+  padelDb.from('courts').select('*').order('id').then(({data, error}) => {
+    if(error){
+      console.error('Error al explorar canchas:', error);
+      toast('No pudimos cargar las canchas');
+      return;
+    }
+
+    const overlay = document.createElement('div');
+
+    overlay.style.cssText = `
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,.45);
+      z-index:9999;
+      display:flex;
+      align-items:flex-end;
+      justify-content:center;
+      padding:20px;
+    `;
+
+    overlay.innerHTML = `
+      <div style="
+        background:#F7F6F2;
+        width:min(100%,520px);
+        border-radius:28px;
+        padding:24px;
+        box-shadow:0 20px 60px rgba(0,0,0,.25);
+      ">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+          <div>
+            <div style="font-size:13px;color:#89976B;font-weight:700;letter-spacing:1px;">
+              PADELCORE CLUB
+            </div>
+            <h2 style="margin:5px 0 0;color:#173F35;">
+              Canchas disponibles
+            </h2>
+          </div>
+          <button id="cerrarCanchas" style="
+            border:0;
+            background:#E8E6DE;
+            width:38px;
+            height:38px;
+            border-radius:50%;
+            font-size:20px;
+            cursor:pointer;
+          ">×</button>
+        </div>
+
+        ${data.map(court => `
+          <div style="
+            background:white;
+            border-radius:18px;
+            padding:18px;
+            margin-bottom:12px;
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+          ">
+            <div>
+              <strong style="font-size:17px;color:#173F35;">
+                ${court.name}
+              </strong>
+              <div style="font-size:13px;color:#777;margin-top:5px;">
+                ${court.surface || 'Superficie no especificada'}
+                ${court.indoor ? ' · Indoor' : ' · Outdoor'}
+              </div>
+            </div>
+
+            <span style="
+              background:#E8EEDC;
+              color:#52663C;
+              padding:7px 10px;
+              border-radius:20px;
+              font-size:11px;
+              font-weight:700;
+            ">
+              DISPONIBLE
+            </span>
+          </div>
+        `).join('')}
+      </div>
+    `;
+
+    document.body.appendChild(overlay);
+
+    document.getElementById('cerrarCanchas').onclick = () => {
+      overlay.remove();
+    };
+
+    overlay.onclick = (e) => {
+      if(e.target === overlay) overlay.remove();
+    };
+  });
+}
+  function toast(msg){
   const el=document.getElementById('toast');
   el.textContent=msg;
   el.classList.add('show');
