@@ -198,16 +198,21 @@ function explorarCanchas(){
               </div>
             </div>
 
-            <span style="
-              background:#E8EEDC;
-              color:#52663C;
-              padding:7px 10px;
-              border-radius:20px;
-              font-size:11px;
-              font-weight:700;
-            ">
-              DISPONIBLE
-            </span>
+            <button
+    onclick="mostrarHorarios(${court.id}, '${court.name}')"
+    style="
+        border:0;
+        background:#173F35;
+        color:white;
+        padding:9px 12px;
+        border-radius:20px;
+        font-size:11px;
+        font-weight:700;
+        cursor:pointer;
+    "
+>
+    VER HORARIOS
+</button>
           </div>
         `).join('')}
       </div>
@@ -223,6 +228,135 @@ function explorarCanchas(){
       if(e.target === overlay) overlay.remove();
     };
   });
+}
+  function mostrarHorarios(courtId, courtName){
+  const horarios = [
+    '09:00 – 10:30',
+    '10:30 – 12:00',
+    '12:00 – 13:30',
+    '13:30 – 15:00',
+    '15:00 – 16:30',
+    '16:30 – 18:00',
+    '18:00 – 19:30',
+    '19:30 – 21:00',
+    '21:00 – 22:30'
+  ];
+
+  const overlay = document.createElement('div');
+
+  overlay.style.cssText = `
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.45);
+    z-index:9999;
+    display:flex;
+    align-items:flex-end;
+    justify-content:center;
+    padding:20px;
+  `;
+
+  overlay.innerHTML = `
+    <div style="
+      background:#F7F6F2;
+      width:min(100%,520px);
+      max-height:85vh;
+      overflow:auto;
+      border-radius:28px;
+      padding:24px;
+      box-shadow:0 20px 60px rgba(0,0,0,.25);
+    ">
+      <div style="
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        margin-bottom:20px;
+      ">
+        <div>
+          <div style="
+            font-size:13px;
+            color:#89976B;
+            font-weight:700;
+            letter-spacing:1px;
+          ">
+            PADELCORE CLUB
+          </div>
+
+          <h2 style="
+            margin:5px 0 0;
+            color:#173F35;
+          ">
+            ${courtName}
+          </h2>
+
+          <div style="
+            margin-top:4px;
+            color:#777;
+            font-size:13px;
+          ">
+            Turnos de 90 minutos
+          </div>
+        </div>
+
+        <button id="cerrarHorarios" style="
+          border:0;
+          background:#E8E6DE;
+          width:38px;
+          height:38px;
+          border-radius:50%;
+          font-size:20px;
+          cursor:pointer;
+        ">
+          ×
+        </button>
+      </div>
+
+      ${horarios.map(hora => `
+        <button
+          onclick="seleccionarHorario('${courtId}', '${courtName}', '${hora}')"
+          style="
+            width:100%;
+            border:0;
+            background:white;
+            color:#173F35;
+            padding:17px;
+            margin-bottom:10px;
+            border-radius:16px;
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            font-size:15px;
+            font-weight:700;
+            cursor:pointer;
+          "
+        >
+          <span>${hora}</span>
+          <span style="
+            background:#E8EEDC;
+            color:#52663C;
+            padding:7px 10px;
+            border-radius:20px;
+            font-size:11px;
+          ">
+            DISPONIBLE
+          </span>
+        </button>
+      `).join('')}
+    </div>
+  `;
+
+  document.body.appendChild(overlay);
+
+  document.getElementById('cerrarHorarios').onclick = () => {
+    overlay.remove();
+  };
+
+  overlay.onclick = (e) => {
+    if(e.target === overlay) overlay.remove();
+  };
+}
+
+function seleccionarHorario(courtId, courtName, hora){
+  toast(`${courtName} · ${hora} seleccionado`);
 }
   function toast(msg){
   const el=document.getElementById('toast');
