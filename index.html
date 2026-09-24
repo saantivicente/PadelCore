@@ -364,6 +364,9 @@ function seleccionarHorario(courtId, courtName, hora){
   el.classList.add('show');
   clearTimeout(window.t);
   window.t=setTimeout(()=>el.classList.remove('show'),1800);
+    function seleccionarHorario(courtId, courtName, hora){
+  toast(`${courtName} · ${hora} seleccionado`);
+}
 }</script>
 </body>
 </html>
