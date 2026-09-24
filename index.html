@@ -98,11 +98,11 @@ h1{font-size:30px;line-height:1.03;letter-spacing:-.055em;margin:7px 0 20px}
 <script>
 const SUPABASE_URL = 'https://joijqoyvuevrugwxtbe.supabase.co';
 const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_Oa4_3vDn20PqsQ72UWRK3Q_CluKu4i1';
-const supabase = window.supabase.createClient(
+const padelDb = window.supabase.createClient(
   SUPABASE_URL,
   SUPABASE_PUBLISHABLE_KEY
 );
-  supabase.from('Club').select('*').limit(1).then(({data, error}) => {
+  padelDb.from('Club').select('*').limit(1).then(({data, error}) => {
   if (error) {
     console.error('Error Supabase:', error);
     return;
