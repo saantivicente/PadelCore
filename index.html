@@ -121,6 +121,14 @@ const padelDb = window.supabase.createClient(
 
   console.log('Club mostrado:', club);
 });
+  padelDb.from('courts').select('*').order('id').then(({data, error}) => {
+  if (error) {
+    console.error('Error canchas:', error);
+    return;
+  }
+
+  console.log('Canchas recibidas:', data);
+});
 function toast(msg){
   const el=document.getElementById('toast');
   el.textContent=msg;
