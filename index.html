@@ -193,11 +193,11 @@ function explorarCanchas(){
             display:flex;
             justify-content:space-between;
             align-items:center;
-        <div>
-    <strong style="font-size:17px;color:#173F35;">
-              <strong style="font-size:17px;color:#173F35;">
-                ${court.name}
-              </strong>
+     <div>
+  <span style="display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:10px;background:#E8EEDC;color:#52663C;font-size:12px;font-weight:800;margin-right:8px;vertical-align:middle;">${court.id}</span>
+  <strong style="font-size:17px;color:#173F35;">
+    ${court.name}
+  </strong>
               <div style="font-size:13px;color:#777;margin-top:5px;">
                 ${court.surface || 'Superficie no especificada'}
                 ${court.indoor ? ' · Indoor' : ' · Outdoor'}
