@@ -37,6 +37,8 @@ h1{font-size:30px;line-height:1.03;letter-spacing:-.055em;margin:7px 0 20px}
 .club-card{height:190px;border-radius:22px;overflow:hidden;position:relative;background:linear-gradient(145deg,#71816d,#203c34);box-shadow:var(--shadow);margin-bottom:10px}
   .club-card{transition:transform .25s ease,box-shadow .25s ease}
 .club-card:hover{transform:translateY(-4px);box-shadow:0 12px 28px rgba(23,63,53,.18)}
+  .court-card{transition:transform .2s ease,box-shadow .2s ease}
+.court-card:hover{transform:translateY(-3px);box-shadow:0 10px 24px rgba(23,63,53,.14)}
 .club-card:before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 25%,rgba(0,0,0,.72))}
 .club-info{position:absolute;left:16px;right:16px;bottom:15px;color:white}.club-info .rating{font-size:11px;margin-bottom:5px}.club-info h3{margin:0;font-size:20px;letter-spacing:-.04em}.club-info p{margin:4px 0 0;font-size:11px;color:rgba(255,255,255,.75)}
 .level{background:var(--paper);border:1px solid var(--line);border-radius:20px;padding:18px;display:flex;align-items:center;justify-content:space-between}.level-num{font-size:35px;font-weight:900;letter-spacing:-.07em}.level small{display:block;color:var(--muted);font-size:10px;letter-spacing:.12em;text-transform:uppercase;font-weight:800}.progress{width:120px;height:7px;background:#e7e4dc;border-radius:10px;overflow:hidden;margin-top:9px}.progress i{display:block;width:68%;height:100%;background:var(--olive);border-radius:10px}.bottom{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:min(430px,100%);background:rgba(255,253,248,.94);backdrop-filter:blur(15px);border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(4,1fr);padding:10px 10px calc(10px + env(safe-area-inset-bottom))}
@@ -183,7 +185,7 @@ function explorarCanchas(){
         </div>
 
         ${data.map(court => `
-          <div style="
+          <div class="court-card" style="
             background:white;
             border-radius:18px;
             padding:18px;
