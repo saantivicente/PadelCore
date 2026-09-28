@@ -356,7 +356,21 @@ function explorarCanchas(){
 }
 
 function seleccionarHorario(courtId, courtName, hora){
-  toast(`${courtName} · ${hora} seleccionado`);
+  document.querySelectorAll('button').forEach(btn => {
+    const estado = btn.querySelector('span:last-child');
+
+    if(estado && (estado.textContent.trim() === 'DISPONIBLE' || estado.textContent.trim() === '✓ SELECCIONADO')){
+      estado.textContent = 'DISPONIBLE';
+      estado.style.background = '#E8EEDC';
+      estado.style.color = '#52663C';
+    }
+
+    if(btn.textContent.includes(hora) && estado){
+      estado.textContent = '✓ SELECCIONADO';
+      estado.style.background = '#173F35';
+      estado.style.color = 'white';
+    }
+  });
 }
 
   function toast(msg){
