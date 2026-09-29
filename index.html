@@ -393,11 +393,13 @@ function seleccionarHorario(courtId, courtName, hora){
       estado.textContent = '✓ SELECCIONADO';
       estado.style.background = '#173F35';
       estado.style.color = 'white';
-      const modal = document.querySelector('#cerrarHorarios').parentElement;
+   const botonConfirmar = [...document.querySelectorAll('button')]
+  .find(btn => btn.textContent.includes('CONFIRMAR RESERVA'));
 
-modal.scrollTo({
-  top: modal.scrollHeight,
-  behavior: 'smooth'
+botonConfirmar.scrollIntoView({
+  behavior: 'smooth',
+  block: 'end'
+});
 });
     }
   });
