@@ -379,7 +379,8 @@ function explorarCanchas(){
   };
 }
 
-function seleccionarHorario(courtId, courtName, hora){
+let reservaSeleccionada = null;
+  function seleccionarHorario(courtId, courtName, hora){
   document.querySelectorAll('button').forEach(btn => {
     const estado = btn.querySelector('span:last-child');
 
