@@ -69,17 +69,11 @@ h1{font-size:30px;line-height:1.03;letter-spacing:-.055em;margin:7px 0 20px}
 
   <div class="section"><h2>Partidos para vos</h2><span class="see">Ver todos →</span></div>
 
-  <article class="match">
-    <div class="match-top"><div><div class="club">Arena Padel</div><div class="date">HOY · 20:00 — 21:30</div></div><span class="open">ABIERTO</span></div>
-    <div class="players"><div class="face f1">JS</div><div class="face f2">MR</div><div class="face f3">LG</div><div class="face empty-face">+</div></div>
-    <div class="match-bottom"><div class="meta"><b>Intermedio</b><br>1 lugar · $7.000</div><button class="join" onclick="toast('Partido seleccionado')">UNIRME</button></div>
-  </article>
-
-  <article class="match">
-    <div class="match-top"><div><div class="club">Padel Club Norte</div><div class="date">MAÑANA · 19:30 — 21:00</div></div><span class="open">ABIERTO</span></div>
-    <div class="players"><div class="face f2">AC</div><div class="face f1">PM</div><div class="face empty-face">+</div><div class="face empty-face">+</div></div>
-    <div class="match-bottom"><div class="meta"><b>Intermedio / Avanzado</b><br>2 lugares · $8.000</div><button class="join" onclick="toast('Partido seleccionado')">UNIRME</button></div>
-  </article>
+  <div id="partidos-home">
+  <div style="padding:20px 0;text-align:center;color:#777;font-size:14px;">
+    Buscando partidos...
+  </div>
+</div>
 
   <div class="section"><h2>Tu nivel</h2><span class="see">Ver perfil →</span></div>
   <section class="level">
@@ -482,6 +476,94 @@ async function confirmarReserva(){
   window.t=setTimeout(()=>el.classList.remove('show'),1800);
    
 }
+  async function cargarPartidosHome(){
+  const contenedor = document.getElementById('partidos-home');
+
+  if(!contenedor) return;
+
+  const { data: partidos, error } = await padelDb
+    .from('matches')
+    .select('*')
+    .eq('status', 'open')
+    .order('date', { ascending: true })
+    .order('start_time', { ascending: true });
+
+  if(error){
+    console.error('Error cargando partidos:', error);
+    contenedor.innerHTML = `
+      <div style="padding:20px 0;text-align:center;color:#777;">
+        No se pudieron cargar los partidos.
+      </div>
+    `;
+    return;
+  }
+
+  if(!partidos || partidos.length === 0){
+    contenedor.innerHTML = `
+      <div style="padding:20px 0;text-align:center;color:#777;">
+        No hay partidos abiertos por ahora.
+      </div>
+    `;
+    return;
+  }
+
+  const partidosConJugadores = await Promise.all(
+    partidos.map(async partido => {
+      const { data: jugadores } = await padelDb
+        .from('match_players')
+        .select('player_id')
+        .eq('match_id', partido.id);
+
+      return {
+        ...partido,
+        jugadores: jugadores || []
+      };
+    })
+  );
+
+  contenedor.innerHTML = partidosConJugadores.map(partido => {
+    const cantidad = partido.jugadores.length;
+    const lugares = 4 - cantidad;
+
+    return `
+      <article class="match">
+        <div class="match-top">
+          <div>
+            <div class="club">PadelCore Club</div>
+            <div class="date">
+              ${partido.date} · ${String(partido.start_time).slice(0,5)} – ${String(partido.end_time).slice(0,5)}
+            </div>
+          </div>
+
+          <span class="open">
+            ABIERTO
+          </span>
+        </div>
+
+        <div class="players">
+          ${partido.jugadores.map(() => `<div class="face f1"></div>`).join('')}
+          ${Array.from({length: lugares}, () => `<div class="face empty-face">+</div>`).join('')}
+        </div>
+
+        <div class="match-bottom">
+          <div class="meta">
+            <b>Intermedio</b><br>
+            ${lugares} ${lugares === 1 ? 'lugar' : 'lugares'} disponibles
+          </div>
+
+          <button
+            class="join"
+            onclick="toast('Próximamente: unirse al partido')"
+          >
+            UNIRME
+          </button>
+        </div>
+      </article>
+    `;
+  }).join('');
+}
+
+cargarPartidosHome();
 </script>
 </body>
 </html>
