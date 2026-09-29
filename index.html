@@ -396,7 +396,16 @@ function seleccionarHorario(courtId, courtName, hora){
     }
   });
 }
+function confirmarReserva(){
+  const seleccionado = document.querySelector('span:last-child');
 
+  if(!seleccionado || seleccionado.textContent.trim() !== '✓ SELECCIONADO'){
+    toast('Seleccioná un horario primero');
+    return;
+  }
+
+  toast('Reserva confirmada');
+}
   function toast(msg){
   const el=document.getElementById('toast');
   el.textContent=msg;
