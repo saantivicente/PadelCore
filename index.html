@@ -553,7 +553,7 @@ async function confirmarReserva(){
 
           <button
             class="join"
-            onclick="toast('Próximamente: unirse al partido')"
+            onclick="unirseAlPartido(${partido.id})"
           >
             UNIRME
           </button>
@@ -562,7 +562,45 @@ async function confirmarReserva(){
     `;
   }).join('');
 }
+async function unirseAlPartido(matchId){
+  const { data: existentes, error: errorConsulta } = await padelDb
+    .from('match_players')
+    .select('player_id')
+    .eq('match_id', matchId);
 
+  if(errorConsulta){
+    console.error('Error consultando jugadores:', errorConsulta);
+    toast('No se pudo consultar el partido');
+    return;
+  }
+
+  if((existentes || []).some(jugador => jugador.player_id === 1)){
+    toast('Ya estás en este partido');
+    return;
+  }
+
+  if((existentes || []).length >= 4){
+    toast('El partido está completo');
+    return;
+  }
+
+  const { error } = await padelDb
+    .from('match_players')
+    .insert({
+      match_id: matchId,
+      player_id: 1
+    });
+
+  if(error){
+    console.error('Error uniéndose al partido:', error);
+    toast('No se pudo unir al partido');
+    return;
+  }
+
+  toast('¡Te uniste al partido!');
+
+  await cargarPartidosHome();
+}
 cargarPartidosHome();
 </script>
 </body>
