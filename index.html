@@ -406,12 +406,34 @@ botonConfirmar.scrollIntoView({
     }
   });
 }
-function confirmarReserva(){
-  const seleccionado = [...document.querySelectorAll('button span:last-child')]
-  .find(span => span.textContent.trim() === '✓ SELECCIONADO');
-
-  if(!seleccionado || seleccionado.textContent.trim() !== '✓ SELECCIONADO'){
+async function confirmarReserva(){
+  if(!reservaSeleccionada){
     toast('Seleccioná un horario primero');
+    return;
+  }
+
+  const [start_time, end_time] = reservaSeleccionada.hora.split(/\s+[–-]\s+/);
+
+  const hoy = new Date();
+  const booking_date =
+    hoy.getFullYear() + '-' +
+    String(hoy.getMonth() + 1).padStart(2, '0') + '-' +
+    String(hoy.getDate()).padStart(2, '0');
+
+  const { error } = await padelDb
+    .from('bookings')
+    .insert({
+      player_id: 1,
+      court_id: reservaSeleccionada.courtId,
+      booking_date: booking_date,
+      start_time: start_time,
+      end_time: end_time,
+      status: 'confirmed'
+    });
+
+  if(error){
+    console.error('Error guardando reserva:', error);
+    toast('No se pudo guardar la reserva');
     return;
   }
 
