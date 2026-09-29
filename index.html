@@ -600,6 +600,34 @@ async function unirseAlPartido(matchId){
   await cargarPartidosHome();
 }
 async function cargarClubesHome(){
+    let ubicacionUsuario = null;
+
+  try {
+
+    ubicacionUsuario = await new Promise((resolve, reject) => {
+
+      navigator.geolocation.getCurrentPosition(
+        posicion => resolve({
+          latitude: posicion.coords.latitude,
+          longitude: posicion.coords.longitude
+        }),
+        error => reject(error),
+        {
+          enableHighAccuracy: true,
+          timeout: 10000,
+          maximumAge: 300000
+        }
+      );
+
+    });
+
+    console.log('Ubicación del usuario:', ubicacionUsuario);
+
+  } catch(error) {
+
+    console.warn('No se pudo obtener la ubicación:', error);
+
+  }
 
   const contenedor = document.getElementById('clubes-home');
 
