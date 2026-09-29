@@ -574,7 +574,7 @@ async function unirseAlPartido(matchId){
     return;
   }
 
-  if((existentes || []).some(jugador => jugador.player_id === 1)){
+  if((existentes || []).some(jugador => jugador.player_id === 2)){
     toast('Ya estás en este partido');
     return;
   }
@@ -588,7 +588,7 @@ async function unirseAlPartido(matchId){
     .from('match_players')
     .insert({
       match_id: matchId,
-      player_id: 1
+      player_id: 2
     });
 
   if(error){
