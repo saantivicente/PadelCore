@@ -394,6 +394,7 @@ let reservaSeleccionada = null;
       estado.textContent = '✓ SELECCIONADO';
       estado.style.background = '#173F35';
       estado.style.color = 'white';
+      reservaSeleccionada = { courtId, courtName, hora };
    const botonConfirmar = [...document.querySelectorAll('button')]
   .find(btn => btn.textContent.includes('CONFIRMAR RESERVA'));
 
