@@ -393,11 +393,18 @@ function seleccionarHorario(courtId, courtName, hora){
       estado.textContent = '✓ SELECCIONADO';
       estado.style.background = '#173F35';
       estado.style.color = 'white';
+      const modal = document.querySelector('#cerrarHorarios').parentElement;
+
+modal.scrollTo({
+  top: modal.scrollHeight,
+  behavior: 'smooth'
+});
     }
   });
 }
 function confirmarReserva(){
-  const seleccionado = document.querySelector('span:last-child');
+  const seleccionado = [...document.querySelectorAll('button span:last-child')]
+  .find(span => span.textContent.trim() === '✓ SELECCIONADO');
 
   if(!seleccionado || seleccionado.textContent.trim() !== '✓ SELECCIONADO'){
     toast('Seleccioná un horario primero');
