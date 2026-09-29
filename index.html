@@ -249,7 +249,27 @@ function explorarCanchas(){
     '19:30 – 21:00',
     '21:00 – 22:30'
   ];
+  
 
+  const hoy = new Date();
+
+  const booking_date =
+    hoy.getFullYear() + '-' +
+    String(hoy.getMonth() + 1).padStart(2, '0') + '-' +
+    String(hoy.getDate()).padStart(2, '0');
+
+  const { data: reservas, error } = await padelDb
+    .from('bookings')
+    .select('start_time, end_time')
+    .eq('court_id', courtId)
+    .eq('booking_date', booking_date)
+    .eq('status', 'confirmed');
+
+  if(error){
+    console.error('Error consultando reservas:', error);
+  }
+
+  const overlay = document.createElement('div');
   const overlay = document.createElement('div');
 
   overlay.style.cssText = `
