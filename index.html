@@ -338,37 +338,52 @@ function explorarCanchas(){
         </button>
       </div>
 
-      ${horarios.map(hora => `
-        <button
-          onclick="seleccionarHorario('${courtId}', '${courtName}', '${hora}')"
-          style="
-            width:100%;
-            border:0;
-            background:white;
-            color:#173F35;
-            padding:17px;
-            margin-bottom:10px;
-            border-radius:16px;
-            display:flex;
-            justify-content:space-between;
-            align-items:center;
-            font-size:15px;
-            font-weight:700;
-            cursor:pointer;
-          "
-        >
-          <span>${hora}</span>
-          <span style="
-            background:#E8EEDC;
-            color:#52663C;
-            padding:7px 10px;
-            border-radius:20px;
-            font-size:11px;
-          ">
-            DISPONIBLE
-          </span>
-        </button>
-      `).join('')}
+     ${horarios.map(hora => {
+  const [inicio, fin] = hora.split(/\s+[–-]\s+/);
+
+  const ocupado = (reservas || []).some(reserva =>
+    String(reserva.start_time).slice(0,5) === inicio &&
+    String(reserva.end_time).slice(0,5) === fin
+  );
+
+  const accion = ocupado
+    ? ''
+    : `onclick="seleccionarHorario('${courtId}', '${courtName}', '${hora}')"`;
+
+  return `
+    <button
+      ${accion}
+      ${ocupado ? 'disabled' : ''}
+      style="
+        width:100%;
+        border:0;
+        background:${ocupado ? '#E9E9E5' : 'white'};
+        color:${ocupado ? '#999' : '#173F35'};
+        padding:17px;
+        margin-bottom:10px;
+        border-radius:16px;
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        font-size:15px;
+        font-weight:700;
+        cursor:${ocupado ? 'not-allowed' : 'pointer'};
+      "
+    >
+      <span>${hora}</span>
+
+      <span style="
+        background:${ocupado ? '#E6E6E1' : '#E8EEDC'};
+        color:${ocupado ? '#999' : '#52663C'};
+        padding:7px 10px;
+        border-radius:20px;
+        font-size:11px;
+      ">
+        ${ocupado ? 'OCUPADO' : 'DISPONIBLE'}
+      </span>
+    </button>
+  `;
+}).join('')}
       <button
   onclick="confirmarReserva()"
   style="
