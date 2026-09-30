@@ -675,7 +675,107 @@ async function cargarClubesHome(){
 }
 
 cargarClubesHome();
-  cargarPartidosHome();
+  window.addEventListener('DOMContentLoaded', () => {
+  const loginScreen = document.getElementById('login-screen');
+const loginEmail = document.getElementById('login-email');
+const loginPassword = document.getElementById('login-password');
+const btnLogin = document.getElementById('btn-login');
+const btnRegister = document.getElementById('btn-register');
+
+async function comprobarSesion(){
+
+  const { data: { session } } = await padelDb.auth.getSession();
+
+  if(session){
+    loginScreen.style.display = 'none';
+  } else {
+    loginScreen.style.display = 'flex';
+  }
+
+}
+
+btnLogin.addEventListener('click', async () => {
+
+  const email = loginEmail.value.trim();
+  const password = loginPassword.value;
+
+  if(!email || !password){
+    toast('Completá email y contraseña');
+    return;
+  }
+
+  btnLogin.disabled = true;
+  btnLogin.textContent = 'INGRESANDO...';
+
+  const { error } = await padelDb.auth.signInWithPassword({
+    email,
+    password
+  });
+
+  btnLogin.disabled = false;
+  btnLogin.textContent = 'INGRESAR';
+
+  if(error){
+    console.error('Error de login:', error);
+    toast('Email o contraseña incorrectos');
+    return;
+  }
+
+  loginScreen.style.display = 'none';
+  toast('¡Bienvenido a PadelCore!');
+
+});
+
+btnRegister.addEventListener('click', async () => {
+
+  const email = loginEmail.value.trim();
+  const password = loginPassword.value;
+
+  if(!email || !password){
+    toast('Completá email y contraseña');
+    return;
+  }
+
+  if(password.length < 6){
+    toast('La contraseña debe tener al menos 6 caracteres');
+    return;
+  }
+
+  btnRegister.disabled = true;
+  btnRegister.textContent = 'CREANDO CUENTA...';
+
+  const { error } = await padelDb.auth.signUp({
+    email,
+    password,
+    options: {
+      emailRedirectTo: window.location.origin + window.location.pathname
+    }
+  });
+
+  btnRegister.disabled = false;
+  btnRegister.textContent = 'CREAR CUENTA';
+
+  if(error){
+    console.error('Error creando cuenta:', error);
+    toast('No se pudo crear la cuenta');
+    return;
+  }
+
+  toast('Revisá tu email para confirmar la cuenta');
+
+});
+
+padelDb.auth.onAuthStateChange((event, session) => {
+
+  if(session){
+    loginScreen.style.display = 'none';
+  }
+
+});
+
+comprobarSesion();
+  });
+    cargarPartidosHome();
 </script>
 <div id="login-screen" style="
   position:fixed;
